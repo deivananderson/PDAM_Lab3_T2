@@ -1,3 +1,7 @@
 <resources>
-  <string name="app_name">ChatApp</string>
+    <string name="app_name">ChatApp</string>
+    <string name="name">name</string>
+    <string name="write_message">message</string>
+    <string name="send_photo">photo</string>
+    <string name="send_message">send message</string>
 </resources>

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "63963593880",
+    "firebase_url": "https://pdamlab3.firebaseio.com",
+    "project_id": "pdamlab3",
+    "storage_bucket": "pdamlab3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:63963593880:android:4388ab628b64178d",
+        "android_client_info": {
+          "package_name": "co.edu.pdam.eci.chatapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "63963593880-um7k1abno4k4kupj7u353ljrhqhjv7vb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBr5aurl5cNOhWWcyyAmS6x9Em2IzKjNh0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
