@@ -50,7 +50,8 @@
           android:layout_height="wrap_content"
           android:layout_weight="1"
           android:padding="10dp"
-          android:text="@string/send_photo" />
+          android:text="@string/send_photo"
+          android:onClick="onSendPhotoClicked"/>
 
       <Button
           android:layout_width="match_parent"

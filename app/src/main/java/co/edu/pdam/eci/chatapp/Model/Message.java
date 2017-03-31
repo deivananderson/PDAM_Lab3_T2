@@ -8,10 +8,10 @@ public class Message {
 
     private String message;
     private String user;
+    private String imageUrl;
 
-    public Message(String message, String user) {
-        this.message = message;
-        this.user = user;
+    public Message(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public  Message(){
@@ -51,5 +51,10 @@ public class Message {
         int result = message.hashCode();
         result = 31 * result + user.hashCode();
         return result;
+    }
+
+    public String getImageUrl() {
+
+        return imageUrl;
     }
 }
