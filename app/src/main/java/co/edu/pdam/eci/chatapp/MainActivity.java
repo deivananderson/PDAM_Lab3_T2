@@ -3,9 +3,11 @@ package co.edu.pdam.eci.chatapp;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.EditText;
 
@@ -30,37 +32,36 @@ public class MainActivity
     extends AppCompatActivity
 {
     private static final  int REQUEST_IMAGE_CAPTURE = 0;
-
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-
     FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-
     FirebaseStorage storage = FirebaseStorage.getInstance();
-
     DatabaseReference databaseReference = database.getReference( "messages" );
-
     MessagesAdapter messagesAdapter = new MessagesAdapter(this);
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate( Bundle savedInstanceState )
     {
         super.onCreate( savedInstanceState );
         setContentView( R.layout.activity_main );
-
         ChildEventListener messagesListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
+                updateMessage(dataSnapshot);
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
+                updateMessage(dataSnapshot);
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
+                Message message = dataSnapshot.getValue( Message.class );
+                if ( message != null )
+                {
+                    messagesAdapter.removeMessage( message );
+                }
             }
 
             @Override
@@ -73,17 +74,43 @@ public class MainActivity
 
             }
         };
-
         databaseReference.addChildEventListener( messagesListener );
+        configureRecyclerView();
 
     }
 
+    private void configureRecyclerView() {
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize( true );
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager( this );
+        linearLayoutManager.setReverseLayout( true );
+        recyclerView.setLayoutManager( linearLayoutManager );
+        recyclerView.setAdapter( messagesAdapter );
+    }
+
+    private void updateMessage( DataSnapshot dataSnapshot )
+    {
+        final Message message = dataSnapshot.getValue( Message.class );
+        if ( message != null )
+        {
+            runOnUiThread( new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    messagesAdapter.addMessage( message );
+                }
+            } );
+        }
+    }
+
     public void onSendClicked(View view) {
+        EditText sender,message;
         Message mensaje = new Message();
-        EditText name = (EditText) findViewById(R.id.sender);
-        EditText mes = (EditText) findViewById(R.id.message);
-        mensaje.setMessage(mes.getText().toString());
-        mensaje.setUser(name.getText().toString());
+        sender = (EditText) findViewById(R.id.sender);
+        message = (EditText) findViewById(R.id.message);
+        mensaje.setMessage(sender.getText().toString());
+        mensaje.setUser(message.getText().toString());
         databaseReference.push().setValue(mensaje);
     }
 
@@ -101,7 +128,6 @@ public class MainActivity
     {
         if ( requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK )
         {
-
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get( "data" );
             UploadPostTask uploadPostTask = new UploadPostTask();
@@ -114,12 +140,10 @@ public class MainActivity
     private class UploadPostTask
             extends AsyncTask<Bitmap, Void, Void>
     {
-
         @Override
         protected Void doInBackground( Bitmap... params )
         {
             StorageReference storageRef = storage.getReferenceFromUrl("gs://pdamlab3.appspot.com/");
-
             Bitmap bitmap = params[0];
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             bitmap.compress( Bitmap.CompressFormat.JPEG, 90, byteArrayOutputStream );
